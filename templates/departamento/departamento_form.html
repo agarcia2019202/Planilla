@@ -1,0 +1,46 @@
+<!-- {% load widget_tweaks %}
+
+<form action="" method="post" tabindex="-1">
+    {% csrf_token %}
+
+    <div class="modal-header" style="padding-bottom: 6px">
+        <a class="label label-link label-info btn-sm btn-icon" style="color: #ff7c7f;font-size:20px">
+            <i class="fas fa-list-ol"></i>
+            Editar Departamento
+        </a>
+
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" style="padding: 2px 24px 16px 24px;">
+
+        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            <a style="font-size:12px;"><b>Nombre:</b></a>
+            {% render_field form.nombre class="form-control"   placeholder="Nombre" %}
+            <span class="text-info" style="font-size:11px;">{{form.nombre.help_text}}</span>
+            <div class="{% if form.nombre.errors %} invalid{% endif %}">
+                {% for error in form.nombre.errors %}
+                <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <a style="font-size:12px;"><b>Descripcion:</b></a>
+            {% render_field form.descripcion class="form-control"  placeholder="Descripcion" %}                        
+            <span class="text-info" style="font-size:11px;">{{form.descripcion.help_text}}</span>
+            <div class="{% if form.nombre.errors %} invalid{% endif %}">
+                {% for error in form.nombre.errors %}
+                <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>        
+    </div>
+    <div class="modal-footer float-right">
+        <button class="submit-btn btn btn-warning animation-on-hover" type="submit">Guardar</button>
+    </div>
+</form> -->

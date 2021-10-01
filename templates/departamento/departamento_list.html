@@ -1,0 +1,54 @@
+<!-- {% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+Departamentos
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<table id="tabla_departamentos" class="table table-bordered"></table>
+</div>
+
+<div class="modal fade"  role="dialog" id="modal">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content modal-contenido"></div>
+
+	</div>
+</div>
+{% endblock%}
+
+
+{% block extrajs %}
+
+<script>
+	$(document).ready(function(){
+		var table = $('#tabla_departamentos').DataTable({						
+			"ajax":{
+				"method":"POST",
+				data:{                
+					csrfmiddlewaretoken: '{{csrf_token}}',
+				},
+				"url": "{% url 'departamento:DepartamentoListado' %}" 				
+			},
+			"columns":[
+				{"data":'nombre','width':'5%',title:"Nombre"},
+				{"data":'descripcion',title:"Descripcion"},
+				{"data":'',title:"Opciones",'width':"8%",'class':'text-center',
+                    "render": function (data, type, row) {
+                        return "<a class='update btn btn-warning btn-link btn-sm btn-icon' href='javascript:void(0)' data-id='/departamento/update/"+row.pk+"/' title='Editar'><i class='bi bi-pencil-fill'></i></a>";
+                    },            				
+				}],
+			"language": {
+				"emptyTable": "Sin registros, ingrese un codigo para iniciar un armado."
+			}
+		});
+		$("#tabla_departamentos tbody").on("click",".update",function(){        
+            $(this).modalForm({formURL: $(this).data('id')});
+        });
+	});
+</script>
+
+{% endblock extrajs %}
+ -->
