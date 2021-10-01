@@ -110,12 +110,12 @@ def detallePlanilla():
     
 
     for i in range(len(data)):
-        basesLeyId = Bases_ley.objects.get(pk=data[i]['basesLeyId__in'])
-        userId = User.objects.get(pk=data[i]['id'])
         detalle = Detalle_planilla(salario_ordinario = data[i]['detalle_puesto__monto_salario'], incentivo = data[i]['bonificacion__in'],\
             bonificaciones = data[i]['ingreso__incentivo'], horas = data[i]['horasExtra'], valor_horas = data[i]['ingreso__valor_horas_extra'],\
             salarioTotal = data[i]['salarioTotal'], cuotaIgss = data[i]['multiplicacionIgss'], descuentoIsr = data[i]['isrTotal'],\
-            totalDeducciones = data[i]['totalDeducciones'], liquido = data[i]['salarioLiquido'], fechaCreacion = today, bases_ley = basesLeyId, user = userId)
+            totalDeducciones = data[i]['totalDeducciones'], liquido = data[i]['salarioLiquido'], fechaCreacion = today)
+        detalle.bases_ley_id = data[i]['basesLeyId__in']
+        detalle.user_id = data[i]['id']
         detalle.save()
     
     return print('Planilla guardada con éxito')
