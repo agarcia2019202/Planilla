@@ -115,7 +115,7 @@ def detallePlanilla():
         detalle = Detalle_planilla(salario_ordinario = data[i]['detalle_puesto__monto_salario'], incentivo = data[i]['bonificacion__in'],\
             bonificaciones = data[i]['ingreso__incentivo'], horas = data[i]['horasExtra'], valor_horas = data[i]['ingreso__valor_horas_extra'],\
             salarioTotal = data[i]['salarioTotal'], cuotaIgss = data[i]['multiplicacionIgss'], descuentoIsr = data[i]['isrTotal'],\
-            totalDeducciones = data[i]['totalDeducciones'], liquido = data[i]['salarioLiquido'], fechaCreacion = today, bases_ley_pk = basesLeyId, user = userId)
+            totalDeducciones = data[i]['totalDeducciones'], liquido = data[i]['salarioLiquido'], fechaCreacion = today, bases_ley = basesLeyId, user = userId)
         detalle.save()
     
     return print('Planilla guardada con éxito')
