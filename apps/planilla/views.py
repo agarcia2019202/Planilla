@@ -1,10 +1,10 @@
 import datetime
-from django.db.models import DecimalField, F, ExpressionWrapper, base, fields
+from django.db.models.functions import Concat
+from django.db.models import DecimalField, F, ExpressionWrapper, Value
 from django.db.models.expressions import Case, Exists, When
 from django.db.models.query_utils import Q
 from apps.planilla.models import *
 from apps.planilla.forms import *
-from django.shortcuts import get_object_or_404, render
 from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
@@ -15,8 +15,8 @@ import json
 
 
 #Detalle Planilla
-def PlanillaList(request):
-    return render(request,'detalle_planilla/detalle_planilla_list.html')
+def PlanillaPreList(request):
+    return render(request,'detalle_planilla/planilla_prelist.html')
 
 
 def DetallePlanilla(request):
@@ -36,12 +36,6 @@ def DetallePlanilla(request):
     except Impuesto.DoesNotExist:
         print('COMUNIQUESE CON EL ADMINISTRADOR, NO HAY ISR REGISTRADO')
         raise Http404
-    try:
-        Impuesto.objects.get(estado=True, descripcion__icontains = 'igss')
-    except Impuesto.DoesNotExist:
-        print('COMUNIQUESE CON EL ADMINISTRADOR, NO HAY IGSS REGISTRADO')
-        raise Http404
-
 
     bonIncentivo = Bases_ley.objects.filter(estado=True)[:1]
     igss = Impuesto.objects.filter(estado=True,descripcion__icontains='igss')
@@ -50,8 +44,8 @@ def DetallePlanilla(request):
 
     listadoUser1 = User.objects.filter(ingreso__planilla=True,detalle_puesto__estado=True)\
         .prefetch_related('Puesto')\
-        .annotate(horasExtra=ExpressionWrapper(F('ingreso__cantidad_horas_aut')*
-                        F('ingreso__valor_horas_extra'),output_field=DecimalField()),
+        .annotate(horasExtra=ExpressionWrapper((F('detalle_puesto__monto_salario')/30)/8*F('ingreso__valor_horas_extra')*
+                        F('ingreso__cantidad_horas_aut'),output_field=DecimalField(max_digits=9, decimal_places=2)),
                     bonificacion__in=Subquery(bonIncentivo.values('bonificacion_incentivo')),
                     salarioTotal = ExpressionWrapper(F('detalle_puesto__monto_salario')+F('ingreso__incentivo')+F('bonificacion__in')+
                         F('horasExtra'), output_field=DecimalField()),
@@ -75,7 +69,7 @@ def DetallePlanilla(request):
     return JsonResponse({'data':list(listadoUser1)})
 
 
-def detallePlanilla():
+def detallePlanilla(request):
 
     today = datetime.date.today()
     bonIncentivo = Bases_ley.objects.filter(estado=True)[:1]
@@ -84,8 +78,8 @@ def detallePlanilla():
 
     data = User.objects.filter(ingreso__planilla=True,detalle_puesto__estado=True)\
         .prefetch_related('Puesto')\
-        .annotate(horasExtra=ExpressionWrapper(F('ingreso__cantidad_horas_aut')*
-                        F('ingreso__valor_horas_extra'),output_field=DecimalField()),
+        .annotate(horasExtra=ExpressionWrapper((F('detalle_puesto__monto_salario')/30)/8*F('ingreso__valor_horas_extra')*
+                        F('ingreso__cantidad_horas_aut'),output_field=DecimalField()),
                     bonificacion__in=Subquery(bonIncentivo.values('bonificacion_incentivo')),
                     basesLeyId__in = Subquery(bonIncentivo.values('id')),
                     salarioTotal = ExpressionWrapper(F('detalle_puesto__monto_salario')+F('ingreso__incentivo')+F('bonificacion__in')+
@@ -108,7 +102,6 @@ def detallePlanilla():
                 'ingreso__valor_horas_extra', 'horasExtra', 'bonificacion__in', 'salarioTotal','multiplicacionIgss',
                 'isrTotal', 'totalDeducciones', 'salarioLiquido', 'basesLeyId__in')
     
-
     for i in range(len(data)):
         detalle = Detalle_planilla(salario_ordinario = data[i]['detalle_puesto__monto_salario'], incentivo = data[i]['bonificacion__in'],\
             bonificaciones = data[i]['ingreso__incentivo'], horas = data[i]['horasExtra'], valor_horas = data[i]['ingreso__valor_horas_extra'],\
@@ -117,11 +110,22 @@ def detallePlanilla():
         detalle.bases_ley_id = data[i]['basesLeyId__in']
         detalle.user_id = data[i]['id']
         detalle.save()
-    
-    return print('Planilla guardada con éxito')
 
-    
-detallePlanilla()
+
+    return HttpResponseRedirect(reverse_lazy('planilla:PlanillaList'))
+
+
+def PlanillaList(request):
+    return render(request,'detalle_planilla/detalle_planilla_list.html')
+
+def PlanillaGet(request):    
+    planilla = Detalle_planilla.objects.all()\
+    .prefetch_related('User').annotate(name=Concat('user__first_name',Value(' '),'user__last_name') ).values('id','salario_ordinario','incentivo', 'bonificaciones', 
+                    'horas', 'valor_horas', 'salarioTotal', 'cuotaIgss', 'descuentoIsr', 'totalDeducciones', 'liquido', 'fechaCreacion', 'name')
+    return JsonResponse({'data':list(planilla)})
+
+
+
 
 
 #Movimientos

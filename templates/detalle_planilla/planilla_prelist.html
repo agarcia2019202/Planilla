@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+Detalle Planilla
+{% endblock %}
+
+{% block content %}
+
+<div>
+	<a target="_blank" class="btn btn-info" href="{% url 'planilla:SaveDetallePlanilla' %}">Guardar</a>
+	<table id="tabla_detalle" class="table table-bordered"></table>
+</div>
+
+{% endblock%}
+
+
+{% block extrajs %}
+
+<script>
+	$(document).ready(function(){
+		var table = $('#tabla_detalle').DataTable({						
+			"ajax":{
+				"method":"POST",
+				data:{                
+					csrfmiddlewaretoken: '{{csrf_token}}',
+				},
+				"url": "{% url 'planilla:DetallePlanilla' %}"				
+			},
+			"columns":[
+				{"data":'id', title:"ID"},
+				{"data":'first_name','width':'5%', title:"Nombres"},
+				{"data":'last_name','width':'5%', title:"Apellidos"},
+				{"data":'puesto__nombre','width':'5%', title:"Puesto"},
+				{"data":'detalle_puesto__monto_salario','width':'5%',title:"Salario"},
+				{"data":'ingreso__incentivo','width':'5%',title:"Incentivo"},
+				{"data":'ingreso__valor_horas_extra', title:"Valor Horas Extra"},
+				{"data":'horasExtra', title:"Percibido Horas Extra"},
+				{"data":'bonificacion__in', title:"Bonificación Incentivo"},
+				{"data":'salarioTotal', title:"Salario Total"},
+				{"data":'multiplicacionIgss', title:"IGSS"},
+				{"data":'isrTotal', title:"ISR"},
+				{"data":'totalDeducciones', title:"Total Deducciones"},
+				{"data":'salarioLiquido', title:"Salario Líquido"},
+                    ],
+			"language": {
+				"emptyTable": "Sin registros, ingrese un codigo para iniciar un armado."
+			}
+		});
+		// $("#tabla_detalle tbody").on("click",".update",function(){        
+        //     $(this).modalForm({formURL: $(this).data('id')});
+        // });
+	});
+</script>
+
+{% endblock extrajs %}
+

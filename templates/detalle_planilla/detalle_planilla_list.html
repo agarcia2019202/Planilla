@@ -8,7 +8,7 @@ Detalle Planilla
 {% block content %}
 
 <div>
-	<table id="tabla_detalle" class="table table-bordered"></table>
+	<table id="tabla_planilla" class="table table-bordered"></table>
 </div>
 
 {% endblock%}
@@ -18,29 +18,30 @@ Detalle Planilla
 
 <script>
 	$(document).ready(function(){
-		var table = $('#tabla_detalle').DataTable({						
+		var table = $('#tabla_planilla').DataTable({		
+			"paginate": true,
+			"searching": true,
 			"ajax":{
 				"method":"POST",
 				data:{                
 					csrfmiddlewaretoken: '{{csrf_token}}',
 				},
-				"url": "{% url 'planilla:DetallePlanilla' %}"				
+				"url": "{% url 'planilla:PlanillaGet' %}"				
 			},
 			"columns":[
 				{"data":'id', title:"ID"},
-				{"data":'first_name','width':'5%', title:"Nombres"},
-				{"data":'last_name','width':'5%', title:"Apellidos"},
-				{"data":'puesto__nombre','width':'5%', title:"Puesto"},
-				{"data":'detalle_puesto__monto_salario','width':'5%',title:"Salario"},
-				{"data":'ingreso__incentivo','width':'5%',title:"Incentivo"},
-				{"data":'ingreso__valor_horas_extra', title:"Valor Horas Extra"},
-				{"data":'horasExtra', title:"Percibido Horas Extra"},
-				{"data":'bonificacion__in', title:"Bonificación Incentivo"},
+				{"data":'salario_ordinario','width':'5%',title:"Salario"},
+				{"data":'incentivo','width':'5%',title:"Incentivo"},
+				{"data":'bonificaciones', title:"Bonos"},
+				{"data":'valor_horas', 'width':'10%', title:"Valor Horas Extra"},
+				{"data":'horas', title:"Horas Extra"},
 				{"data":'salarioTotal', title:"Salario Total"},
-				{"data":'multiplicacionIgss', title:"IGSS"},
-				{"data":'isrTotal', title:"ISR"},
-				{"data":'totalDeducciones', title:"Total Deducciones"},
-				{"data":'salarioLiquido', title:"Salario Líquido"},
+				{"data":'cuotaIgss', title:"IGSS"},
+				{"data":'descuentoIsr', title:"ISR"},
+				{"data":'totalDeducciones','width':'5%', title:"Total Deducciones"},
+				{"data":'liquido', title:"Salario Líquido"},
+				{"data":'fechaCreacion', title:"Fecha"},
+				{"data":'name', title:"Usuario"},
                     ],
 			"language": {
 				"emptyTable": "Sin registros, ingrese un codigo para iniciar un armado."
