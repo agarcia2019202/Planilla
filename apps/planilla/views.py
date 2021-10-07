@@ -1,4 +1,5 @@
 import datetime
+from django.db.models.aggregates import Sum
 from django.db.models.functions import Concat
 from django.db.models import DecimalField, F, ExpressionWrapper, Value
 from django.db.models.expressions import Case, Exists, When
@@ -37,10 +38,11 @@ def DetallePlanilla(request):
         print('COMUNIQUESE CON EL ADMINISTRADOR, NO HAY ISR REGISTRADO')
         raise Http404
 
-    bonIncentivo = Bases_ley.objects.filter(estado=True)[:1]
+    bonIncentivo = Bases_ley.objects.filter(estado=True)
     igss = Impuesto.objects.filter(estado=True,descripcion__icontains='igss')
     isr = Impuesto.objects.filter(estado=True, descripcion__icontains='isr')
-    deudas = Pago_movimiento.objects.filter()
+    #lo de poder seleccionar el mes(Septiembre)
+    #deudas = Pago_movimiento.objects.select_related('movimiento').filter(fecha__month=9,movimiento__user=request.user).aggregate(suma=Sum('monto'))
 
     listadoUser1 = User.objects.filter(ingreso__planilla=True,detalle_puesto__estado=True)\
         .prefetch_related('Puesto')\
@@ -69,7 +71,7 @@ def DetallePlanilla(request):
     return JsonResponse({'data':list(listadoUser1)})
 
 
-def detallePlanilla(request):
+def saveDetallePlanilla(request):
 
     today = datetime.date.today()
     bonIncentivo = Bases_ley.objects.filter(estado=True)[:1]

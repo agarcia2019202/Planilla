@@ -6,9 +6,15 @@ Detalle Planilla
 {% endblock %}
 
 {% block content %}
-
-<div>
-	<table id="tabla_planilla" class="table table-bordered"></table>
+<br>
+<div class="container-fluid">
+	<div class="card">
+		<div class="card-body">
+			<div class="table-responsive">
+				<table id="tabla_planilla" class="table table-bordered"></table>
+			</div>
+		</div>
+	</div>
 </div>
 
 {% endblock%}
@@ -29,22 +35,26 @@ Detalle Planilla
 				"url": "{% url 'planilla:PlanillaGet' %}"				
 			},
 			"columns":[
-				{"data":'id', title:"ID"},
-				{"data":'salario_ordinario','width':'5%',title:"Salario"},
-				{"data":'incentivo','width':'5%',title:"Incentivo"},
-				{"data":'bonificaciones', title:"Bonos"},
-				{"data":'valor_horas', 'width':'10%', title:"Valor Horas Extra"},
-				{"data":'horas', title:"Horas Extra"},
-				{"data":'salarioTotal', title:"Salario Total"},
-				{"data":'cuotaIgss', title:"IGSS"},
-				{"data":'descuentoIsr', title:"ISR"},
-				{"data":'totalDeducciones','width':'5%', title:"Total Deducciones"},
-				{"data":'liquido', title:"Salario Líquido"},
-				{"data":'fechaCreacion', title:"Fecha"},
-				{"data":'name', title:"Usuario"},
-                    ],
+				{"data":'id', title:"ID", "class": 'text-right'},
+				{"data":'name', title:"Usuario", "class": 'text-right'},
+				{"data":'salario_ordinario','width':'5%',title:"Salario", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'incentivo','width':'5%',title:"Incentivo", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'bonificaciones', title:"Bonos", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'valor_horas', 'width':'5%', title:"Valor Horas Extra", "class": 'text-right'},
+				{"data":'horas', title:"Horas Extra", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'salarioTotal', title:"Salario Total", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'cuotaIgss', title:"IGSS", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'descuentoIsr', title:"ISR", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'totalDeducciones','width':'5%', title:"Total Deducciones", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'liquido', title:"Salario Líquido", "class": 'text-right', render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'fechaCreacion', title:"Fecha", 'width': '10%', "class": 'text-right'},
+				{"data":'',title:"Opciones",'width':"8%",'class':'text-center',
+                    "render": function (data, type, row) {
+                        return "<a class='update btn btn-warning btn-link btn-sm btn-icon' href='javascript:void(0)' data-id='/departamento/update/"+row.pk+"/' title='Editar'><i class='bi bi-pencil-fill'></i></a>";
+                    },
+				}],
 			"language": {
-				"emptyTable": "Sin registros, ingrese un codigo para iniciar un armado."
+				"emptyTable": "Sin registros."
 			}
 		});
 		// $("#tabla_detalle tbody").on("click",".update",function(){        

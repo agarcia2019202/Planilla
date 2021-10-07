@@ -6,10 +6,17 @@ Detalle Planilla
 {% endblock %}
 
 {% block content %}
-
-<div>
-	<a target="_blank" class="btn btn-info" href="{% url 'planilla:SaveDetallePlanilla' %}">Guardar</a>
-	<table id="tabla_detalle" class="table table-bordered"></table>
+<br>
+<div class="container-fluid">
+	<div class="card">
+		<div class="card-body">
+			<a target="_blank" class="btn btn-outline-success" href="{% url 'planilla:SaveDetallePlanilla' %}">Guardar</a>
+			<br><br>
+			<div class="table-responsive">
+				<table id="tabla_detalle" class="table table-bordered"></table>
+			</div>
+		</div>
+	</div>
 </div>
 
 {% endblock%}
@@ -19,7 +26,8 @@ Detalle Planilla
 
 <script>
 	$(document).ready(function(){
-		var table = $('#tabla_detalle').DataTable({						
+		var table = $('#tabla_detalle').DataTable({		
+			"responsive": true,				
 			"ajax":{
 				"method":"POST",
 				data:{                
@@ -28,23 +36,23 @@ Detalle Planilla
 				"url": "{% url 'planilla:DetallePlanilla' %}"				
 			},
 			"columns":[
-				{"data":'id', title:"ID"},
-				{"data":'first_name','width':'5%', title:"Nombres"},
-				{"data":'last_name','width':'5%', title:"Apellidos"},
-				{"data":'puesto__nombre','width':'5%', title:"Puesto"},
-				{"data":'detalle_puesto__monto_salario','width':'5%',title:"Salario"},
-				{"data":'ingreso__incentivo','width':'5%',title:"Incentivo"},
-				{"data":'ingreso__valor_horas_extra', title:"Valor Horas Extra"},
-				{"data":'horasExtra', title:"Percibido Horas Extra"},
-				{"data":'bonificacion__in', title:"Bonificación Incentivo"},
-				{"data":'salarioTotal', title:"Salario Total"},
-				{"data":'multiplicacionIgss', title:"IGSS"},
-				{"data":'isrTotal', title:"ISR"},
-				{"data":'totalDeducciones', title:"Total Deducciones"},
-				{"data":'salarioLiquido', title:"Salario Líquido"},
+				{"data":'id', title:"ID", "class": 'text-right'},
+				{"data":'first_name','width':'5%', title:"Nombres", "class": 'text-right'},
+				{"data":'last_name','width':'5%', title:"Apellidos", "class": 'text-right'},
+				{"data":'puesto__nombre','width':'5%', title:"Puesto", "class": 'text-right'},
+				{"data":'detalle_puesto__monto_salario', title:"Salario", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'ingreso__incentivo',title:"Incentivo", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'ingreso__valor_horas_extra', title:"Valor Horas Extra", "class": 'text-right'},
+				{"data":'horasExtra', title:"Percibido Horas Extra", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'bonificacion__in', title:"Bonificación Incentivo", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'salarioTotal', title:"Salario Total", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'multiplicacionIgss', title:"IGSS", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'isrTotal', title:"ISR", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'totalDeducciones', title:"Total Deducciones", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
+				{"data":'salarioLiquido',title:"Salario Líquido", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
                     ],
 			"language": {
-				"emptyTable": "Sin registros, ingrese un codigo para iniciar un armado."
+				"emptyTable": "Sin registros."
 			}
 		});
 		// $("#tabla_detalle tbody").on("click",".update",function(){        
