@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('productividad', models.DecimalField(decimal_places=2, max_digits=7, null=True)),
                 ('horas', models.DecimalField(decimal_places=2, max_digits=8)),
                 ('valor_horas', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('salarioTotal', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('devengadoTotal', models.DecimalField(decimal_places=2, max_digits=8)),
                 ('cuotaIgss', models.DecimalField(decimal_places=2, max_digits=8)),
                 ('descuentoIsr', models.DecimalField(decimal_places=2, max_digits=8, null=True)),
                 ('totalDeducciones', models.DecimalField(decimal_places=2, max_digits=8)),

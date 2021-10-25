@@ -29,21 +29,24 @@ class Puesto(models.Model):
 class Detalle_puesto(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     puesto = models.ForeignKey(Puesto, on_delete=models.SET_NULL, null=True)
-    monto_salario = models.DecimalField(_(u'monto_salario'), decimal_places=2, max_digits=12,validators=[MinValueValidator(Decimal('0.01'))], null=False, blank=True)
+    monto_salario = models.DecimalField(_(u'monto_salario'), decimal_places=2, max_digits=12,validators=[MinValueValidator(Decimal('0.01'))], null=False, blank=False)
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField(null=True, blank=True)
+    jornada = models.PositiveIntegerField()
     minimo = models.BooleanField()
     estado = models.BooleanField()
 
 class Reloj(models.Model):
     fecha = models.DateTimeField()
+    horasExtra = models.BooleanField()
+    permiso = models.BooleanField()
     user = models.ForeignKey(User,on_delete=models.SET_NULL, null=True)
 
 class Ingreso(models.Model):
-    incentivo = models.DecimalField(_(u'incentivo'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=True)  
+    incentivo = models.DecimalField(_(u'incentivo'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)  
     aplica_hora_extra = models.BooleanField()
     cantidad_horas_aut = models.PositiveIntegerField()
-    valor_horas_extra = models.DecimalField(_(u'valor_horas_extra'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=True)
+    valor_horas_extra = models.DecimalField(_(u'valor_horas_extra'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
     planilla = models.BooleanField()
     honorarios = models.BooleanField()
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
@@ -67,7 +70,7 @@ class Tipo_movimiento(models.Model):
 class Interes(models.Model):
     descripcion = models.CharField(max_length=150)
     porcentaje = models.DecimalField(_(u'porcentaje'), decimal_places=4, max_digits=7,validators=[MinValueValidator(Decimal('0.01'))], null=False, blank=False)
-    mora = models.DecimalField(_(u'mora'), decimal_places=3, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=True)
+    mora = models.DecimalField(_(u'mora'), decimal_places=3, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
     max_pagos = models.PositiveIntegerField()
     estado = models.BooleanField()
 
@@ -97,7 +100,7 @@ class Pago_movimiento(models.Model):
 class Impuesto(models.Model):
     descripcion = models.CharField(max_length=60)
     porcentaje = models.DecimalField(_(u'porcentaje'), decimal_places=4, max_digits=7,validators=[MinValueValidator(Decimal('0.01'))])
-    monto_minimo = models.DecimalField(_(u'monto_minimo'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.01'))], null=True, blank=True)
+    monto_minimo = models.DecimalField(_(u'monto_minimo'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.01'))], null=True, blank=False)
     estado = models.BooleanField()
 
 class Bases_ley(models.Model):
@@ -114,6 +117,18 @@ class Detalle_impuesto(models.Model):
     impuesto = models.ForeignKey(Impuesto, on_delete=models.SET_NULL, null=True)
     bases_ley = models.ForeignKey(Bases_ley, on_delete=models.SET_NULL, null=True)
 
+class Detalle_reloj(models.Model):
+    fecha = models.DateField()
+    calculo = models.DecimalField(_(u'calculo'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
+    horasTrabajadas = models.DecimalField(_(u'horasTrabajadas'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.01'))], null=False, blank=False)
+    horasExtra = models.DecimalField(_(u'horasExtra'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
+    permisos = models.DecimalField(_(u'permisos'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
+    sePaga = models.BooleanField()
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='usuario')
+    autorizo = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='autorizador')
+    nota = models.CharField(max_length=150)
+
+
 class Detalle_planilla(models.Model):
     salario_ordinario = models.DecimalField(max_digits=9, decimal_places=2)
     dias_trabajados = models.DecimalField(max_digits=4, decimal_places=2, null=True)
@@ -122,7 +137,7 @@ class Detalle_planilla(models.Model):
     productividad = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     horas = models.DecimalField(max_digits=8, decimal_places=2)
     valor_horas = models.DecimalField(max_digits=5, decimal_places=2)
-    salarioTotal = models.DecimalField(max_digits=8, decimal_places=2)
+    devengadoTotal = models.DecimalField(max_digits=8, decimal_places=2)
     cuotaIgss = models.DecimalField(max_digits=8, decimal_places=2)
     descuentoIsr = models.DecimalField(max_digits=8, decimal_places=2, null=True)
     totalDeducciones = models.DecimalField(max_digits=8, decimal_places=2)

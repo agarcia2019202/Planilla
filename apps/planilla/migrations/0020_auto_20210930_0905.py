@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='detalle_planilla',
-            name='salarioTotal',
+            name='devengadoTotal',
             field=models.DecimalField(decimal_places=2, default=0, max_digits=8),
             preserve_default=False,
         ),

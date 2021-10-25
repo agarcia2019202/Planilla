@@ -7,10 +7,16 @@ Detalle Planilla
 
 {% block content %}
 <br>
-<div class="container-fluid">
+<div class="container">
 	<div class="card">
-		<div class="card-body">
-			<a target="_blank" class="btn btn-outline-success" href="{% url 'planilla:SaveDetallePlanilla' %}">Guardar</a>
+		<div class="card">
+			<label>Mes</label>
+			<input id="valor" type="text">			
+			<button id="generar">Generar</button>						
+		</div>
+		<div id="bloque" class="card-body d-none">
+			<a target="_blank" class="btn btn-outline-success"
+				href="{% url 'planilla:SaveDetallePlanilla' %}">Guardar</a>
 			<br><br>
 			<div class="table-responsive">
 				<table id="tabla_detalle" class="table table-bordered"></table>
@@ -25,41 +31,84 @@ Detalle Planilla
 {% block extrajs %}
 
 <script>
-	$(document).ready(function(){
-		var table = $('#tabla_detalle').DataTable({		
-			"responsive": true,				
-			"ajax":{
-				"method":"POST",
-				data:{                
+	//AJAX ya no se tiene que activar al iniciar la pagina
+
+	$(document).ready(function () {
+		
+		
+		// $("#tabla_detalle tbody").on("click",".update",function(){        
+		//     $(this).modalForm({formURL: $(this).data('id')});
+		// });
+	});
+
+	function cargarTabla(){
+		mes = $("#valor").val()
+		var table = $('#tabla_detalle').DataTable({
+			"responsive": true,
+			"ajax": {
+				"method": "POST",
+				data: {	
+					mes:mes,				
 					csrfmiddlewaretoken: '{{csrf_token}}',
 				},
-				"url": "{% url 'planilla:DetallePlanilla' %}"				
+				"url": "{% url 'planilla:DetallePlanilla' %}"
 			},
-			"columns":[
-				{"data":'id', title:"ID", "class": 'text-right'},
-				{"data":'first_name','width':'5%', title:"Nombres", "class": 'text-right'},
-				{"data":'last_name','width':'5%', title:"Apellidos", "class": 'text-right'},
-				{"data":'puesto__nombre','width':'5%', title:"Puesto", "class": 'text-right'},
-				{"data":'detalle_puesto__monto_salario', title:"Salario", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'ingreso__incentivo',title:"Incentivo", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'ingreso__valor_horas_extra', title:"Valor Horas Extra", "class": 'text-right'},
-				{"data":'horasExtra', title:"Percibido Horas Extra", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'bonificacion__in', title:"Bonificación Incentivo", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'salarioTotal', title:"Salario Total", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'multiplicacionIgss', title:"IGSS", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'isrTotal', title:"ISR", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'totalDeducciones', title:"Total Deducciones", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-				{"data":'salarioLiquido',title:"Salario Líquido", "class": 'text-right',render: $.fn.dataTable.render.number( ',', '.', 2, 'Q.' )},
-                    ],
+			"columns": [
+				{ "data": 'id', title: "ID", "class": 'text-right' },
+				{ "data": 'first_name', 'width': '5%', title: "Nombres", "class": 'text-right' },
+				{ "data": 'last_name', 'width': '5%', title: "Apellidos", "class": 'text-right' },
+				{ "data": 'puesto__nombre', 'width': '5%', title: "Puesto", "class": 'text-right' },
+				{ "data": 'puesto__departamento__nombre', 'width': '5%', title: "Departamento", "class": 'text-right' },
+				// {
+				// 	"data": '', 'width': '5%', title: "", "class": 'text-center',
+				// 	"render": function (data, type, row) {
+				// 		return "<a class='update btn btn-warning btn-link btn-sm btn-icon'title='Editar'><i class='bi bi-pencil-fill'></i></a>";
+				// 	}
+				// },
+				{ "data": 'detalle_puesto__monto_salario', title: "Sueldo Mensual", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'diasTrabajados', 'width': '5%', title: "Días Trabajados", "class": 'text-right' },
+				{ "data": 'salarioDevengado', title: "Salario Devengado", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'ingreso__incentivo', title: "Incentivo", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'ingreso__cantidad_horas_aut', title: "Horas Extra Aut.", "class": 'text-right' },
+				{ "data": 'ingreso__valor_horas_extra', title: "Valor Horas Extra", "class": 'text-right' },
+				{ "data": 'horasExtra', title: "Percibido Horas Extra", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'incentivo', title: "Bonificación Incentivo", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'devengadoTotal', title: "Salario Total", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'multiplicacionIgss', title: "IGSS", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'isrTotal', title: "ISR", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'deudas', title: "Deudas", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'totalDeducciones', title: "Total Deducciones", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'salarioLiquido', title: "Salario Líquido", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{"data":'cambiar', 'class':'text-center cambiar',
+					"width":"4%",
+					"orderable":false,
+					"render": function (data, type, row) {						
+							return "<i class='bi bi-alarm cambiar'></i>";												
+						}
+					},
+			],
 			"language": {
 				"emptyTable": "Sin registros."
 			}
 		});
-		// $("#tabla_detalle tbody").on("click",".update",function(){        
-        //     $(this).modalForm({formURL: $(this).data('id')});
-        // });
+		// $('#tabla_detalle tbody').on('click', '.cambiar', function () {
+		// 		console.log('aaa')
+		// 	var data = table.row( $(this).parents('tr') ).data().id;
+
+			
+		// 	console.log(data);
+			
+			
+		// });
+	}
+
+	$("#generar").on("click",function(){
+		console.log("holi");
+		$("#bloque").removeClass("d-none")
+		cargarTabla();
 	});
+	
+
 </script>
 
 {% endblock extrajs %}
-
