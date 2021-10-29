@@ -3,7 +3,7 @@ from apps.planilla.models import *
 
 admin.site.register(Departamento)
 admin.site.register(Puesto)
-# admin.site.register(Detalle_puesto)
+admin.site.register(Detalle_puesto)
 admin.site.register(Reloj)
 admin.site.register(Ingreso)
 admin.site.register(Tipo_movimiento)
