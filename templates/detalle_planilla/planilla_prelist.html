@@ -9,32 +9,32 @@ Detalle Planilla
 <br>
 <div class="container">
 	<div class="card">
-		<div class="card">
-			<label>Mes</label>
-			<select id="valor" class="form-select" aria-label="Default select example">
-				<option selected>Seleccione el mes</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
-				<option value="6">6</option>
-				<option value="7">7</option>
-				<option value="8">8</option>
-				<option value="9">9</option>
-				<option value="10">10</option>
-				<option value="11">11</option>
-				<option value="12">12</option>
-			  </select>
-			<!-- <input id="valor" type="text">			 -->
-			<button id="generar">Generar</button>						
-		</div>
+		<label>Mes</label>
+		<select id="valor" class="form-select" aria-label="Default select example">
+			<option selected>Seleccione el mes</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="10">10</option>
+			<option value="11">11</option>
+			<option value="12">12</option>
+		</select>
+		<!-- <input id="valor" type="text">			 -->
+		<button id="generar">Generar</button>
+	</div>
+	<div class="card">
 		<div id="bloque" class="card-body d-none">
 			<a target="_blank" class="btn btn-outline-success"
 				href="{% url 'planilla:SaveDetallePlanilla' %}">Guardar</a>
 			<br><br>
 			<div class="table-responsive">
-				<table id="tabla_detalle" class="table table-bordered"></table>
+				<table id="tabla_detalle" class="table table-striped"></table>
 			</div>
 		</div>
 	</div>
@@ -49,21 +49,21 @@ Detalle Planilla
 	//AJAX ya no se tiene que activar al iniciar la pagina
 
 	$(document).ready(function () {
-		
-		
+
+
 		// $("#tabla_detalle tbody").on("click",".update",function(){        
 		//     $(this).modalForm({formURL: $(this).data('id')});
 		// });
 	});
 
-	function cargarTabla(){
+	function cargarTabla() {
 		mes = $("#valor").val()
 		var table = $('#tabla_detalle').DataTable({
 			"responsive": true,
 			"ajax": {
 				"method": "POST",
-				data: {	
-					mes:mes,				
+				data: {
+					mes: mes,
 					csrfmiddlewaretoken: '{{csrf_token}}',
 				},
 				"url": "{% url 'planilla:DetallePlanilla' %}"
@@ -74,6 +74,7 @@ Detalle Planilla
 				{ "data": 'last_name', 'width': '5%', title: "Apellidos", "class": 'text-right' },
 				{ "data": 'puesto__nombre', 'width': '5%', title: "Puesto", "class": 'text-right' },
 				{ "data": 'puesto__departamento__nombre', 'width': '5%', title: "Departamento", "class": 'text-right' },
+				{ "data": 'detalle_puesto__jornada', 'width': '5%', title: "Jornada", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 0) },
 				// {
 				// 	"data": '', 'width': '5%', title: "", "class": 'text-center',
 				// 	"render": function (data, type, row) {
@@ -81,26 +82,28 @@ Detalle Planilla
 				// 	}
 				// },
 				{ "data": 'detalle_puesto__monto_salario', title: "Sueldo Mensual", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
-				{ "data": 'diasTrabajados', 'width': '5%', title: "Días Trabajados", "class": 'text-right' },
+				{ "data": 'totalDias', 'width': '5%', title: "Días Pagados", "class": 'text-right' },
+				{ "data": 'horasDia', 'width': '5%', title: "Horas Pagadas", "class": 'text-right' },
 				{ "data": 'salarioDevengado', title: "Salario Devengado", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
 				{ "data": 'ingreso__incentivo', title: "Incentivo", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
-				{ "data": 'ingreso__cantidad_horas_aut', title: "Horas Extra Aut.", "class": 'text-right' },
+				{ "data": 'cantidadHorasE', title: "Horas Extra.", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 0)},
 				{ "data": 'ingreso__valor_horas_extra', title: "Valor Horas Extra", "class": 'text-right' },
 				{ "data": 'horasExtra', title: "Percibido Horas Extra", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
 				{ "data": 'incentivo', title: "Bonificación Incentivo", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
 				{ "data": 'devengadoTotal', title: "Salario Total", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
 				{ "data": 'multiplicacionIgss', title: "IGSS", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
 				{ "data": 'isrTotal', title: "ISR", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
-				{ "data": 'deudas', title: "Deudas", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
+				{ "data": 'totalDeuda', title: "Deudas", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
 				{ "data": 'totalDeducciones', title: "Total Deducciones", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
 				{ "data": 'salarioLiquido', title: "Salario Líquido", "class": 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, 'Q.') },
-				{"data":'cambiar', 'class':'text-center cambiar',
-					"width":"4%",
-					"orderable":false,
-					"render": function (data, type, row) {						
-							return "<i class='bi bi-alarm cambiar'></i>";												
-						}
-					},
+				{
+					"data": 'cambiar', 'class': 'text-center cambiar',
+					"width": "4%",
+					"orderable": false,
+					"render": function (data, type, row) {
+						return "<i class='bi bi-alarm cambiar'></i>";
+					}
+				},
 			],
 			"language": {
 				"emptyTable": "Sin registros."
@@ -110,19 +113,19 @@ Detalle Planilla
 		// 		console.log('aaa')
 		// 	var data = table.row( $(this).parents('tr') ).data().id;
 
-			
+
 		// 	console.log(data);
-			
-			
+
+
 		// });
 	}
 
-	$("#generar").on("click",function(){
+	$("#generar").on("click", function () {
 		console.log("holi");
 		$("#bloque").removeClass("d-none")
 		cargarTabla();
 	});
-	
+
 
 </script>
 

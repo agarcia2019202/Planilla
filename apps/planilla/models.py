@@ -45,7 +45,7 @@ class Reloj(models.Model):
 class Ingreso(models.Model):
     incentivo = models.DecimalField(_(u'incentivo'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)  
     aplica_hora_extra = models.BooleanField()
-    cantidad_horas_aut = models.PositiveIntegerField()
+    cantidad_horas_aut = models.DecimalField(_(u'cantidad_horas_aut'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
     valor_horas_extra = models.DecimalField(_(u'valor_horas_extra'), decimal_places=2, max_digits=8,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
     planilla = models.BooleanField()
     honorarios = models.BooleanField()
@@ -89,7 +89,7 @@ class Movimiento(models.Model):
     interes = models.ForeignKey(Interes, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f'{self.descripcion}'
+        return f'{self.descripcion} - {self.user.first_name} {self.user.last_name}'
 
 class Pago_movimiento(models.Model):
     fecha = models.DateField()
@@ -123,10 +123,11 @@ class Detalle_reloj(models.Model):
     horasTrabajadas = models.DecimalField(_(u'horasTrabajadas'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.01'))], null=False, blank=False)
     horasExtra = models.DecimalField(_(u'horasExtra'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
     permisos = models.DecimalField(_(u'permisos'), decimal_places=2, max_digits=9,validators=[MinValueValidator(Decimal('0.00'))], null=True, blank=False)
+    diaConPermiso = models.BooleanField()
     sePaga = models.BooleanField()
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='usuario')
-    autorizo = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='autorizador')
-    nota = models.CharField(max_length=150)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='detalle_reloj')
+    autorizo = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='autorizador')
+    nota = models.CharField(max_length=150, null=True, blank=True)
 
 
 class Detalle_planilla(models.Model):
